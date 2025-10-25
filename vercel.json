@@ -2,7 +2,7 @@
   "buildCommand": "pnpm build",
   "devCommand": "pnpm dev",
   "installCommand": "pnpm install",
-  "framework": "nextjs",
+  "outputDirectory": "dist",
   "headers": [
     {
       "source": "/api/trpc/:path*",
