@@ -7,4 +7,16 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
+  sanityProjectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID ?? "",
+  sanityDataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
+  sanityPreviewToken: process.env.NEXT_PUBLIC_SANITY_PREVIEW_TOKEN ?? "",
 };
+
+// Validate required environment variables
+if (!ENV.sanityProjectId) {
+  console.error("NEXT_PUBLIC_SANITY_PROJECT_ID is not set");
+}
+if (!ENV.databaseUrl) {
+  console.error("DATABASE_URL is not set");
+}
+
