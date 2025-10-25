@@ -1,0 +1,31 @@
+{
+  "query": "SELECT COUNT(*) as pillar_count FROM pillars; SELECT COUNT(*) as article_count FROM articles; SELECT * FROM pillars LIMIT 3;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3nCkLECQ5u66dyS.root --database FDsF4AYnsZ9Z8B3Dwyfy5S --execute SELECT COUNT(*) as pillar_count FROM pillars; SELECT COUNT(*) as article_count FROM articles; SELECT * FROM pillars LIMIT 3;",
+  "rows": [
+    {
+      "pillar_count": "3"
+    },
+    {
+      "pillar_count": "article_count"
+    },
+    {
+      "pillar_count": "5"
+    },
+    {
+      "pillar_count": "id\tslug\tname\tdescription\tcreatedAt\tupdatedAt"
+    },
+    {
+      "pillar_count": "1\tmind\tMind\tExplore topics related to mental health, productivity, and personal growth.\t2025-10-25 05:48:53\t2025-10-25 05:48:53"
+    },
+    {
+      "pillar_count": "2\tbody\tBody\tDiscover insights about physical health, fitness, and wellness.\t2025-10-25 05:48:53\t2025-10-25 05:48:53"
+    },
+    {
+      "pillar_count": "3\tsoul\tSoul\tConnect with content about spirituality, purpose, and inner peace.\t2025-10-25 05:48:53\t2025-10-25 05:48:53"
+    }
+  ],
+  "messages": [],
+  "stdout": "pillar_count\n3\narticle_count\n5\nid\tslug\tname\tdescription\tcreatedAt\tupdatedAt\n1\tmind\tMind\tExplore topics related to mental health, productivity, and personal growth.\t2025-10-25 05:48:53\t2025-10-25 05:48:53\n2\tbody\tBody\tDiscover insights about physical health, fitness, and wellness.\t2025-10-25 05:48:53\t2025-10-25 05:48:53\n3\tsoul\tSoul\tConnect with content about spirituality, purpose, and inner peace.\t2025-10-25 05:48:53\t2025-10-25 05:48:53\n",
+  "stderr": "",
+  "execution_time_ms": 1968
+}

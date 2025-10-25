@@ -25,4 +25,52 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Pillar (Category) table for organizing content
+ */
+export const pillars = mysqlTable("pillars", {
+  id: int("id").autoincrement().primaryKey(),
+  slug: varchar("slug", { length: 64 }).notNull().unique(),
+  name: varchar("name", { length: 255 }).notNull(),
+  description: text("description"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Pillar = typeof pillars.$inferSelect;
+export type InsertPillar = typeof pillars.$inferInsert;
+
+/**
+ * Article table for content management
+ */
+export const articles = mysqlTable("articles", {
+  id: int("id").autoincrement().primaryKey(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+  title: varchar("title", { length: 255 }).notNull(),
+  subtitle: text("subtitle"),
+  author: varchar("author", { length: 255 }).notNull(),
+  pillarId: int("pillarId").notNull(),
+  featuredImageUrl: text("featuredImageUrl"),
+  richTextBody: text("richTextBody").notNull(),
+  metaDescription: text("metaDescription"),
+  isFeatured: int("isFeatured").default(0).notNull(),
+  publishedAt: timestamp("publishedAt").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type Article = typeof articles.$inferSelect;
+export type InsertArticle = typeof articles.$inferInsert;
+
+/**
+ * Newsletter subscription table
+ */
+export const newsletterSubscriptions = mysqlTable("newsletterSubscriptions", {
+  id: int("id").autoincrement().primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  subscribedAt: timestamp("subscribedAt").defaultNow().notNull(),
+  unsubscribedAt: timestamp("unsubscribedAt"),
+});
+
+export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
+export type InsertNewsletterSubscription = typeof newsletterSubscriptions.$inferInsert;

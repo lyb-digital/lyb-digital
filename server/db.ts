@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, articles, pillars, newsletterSubscriptions } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,68 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// Content management queries
+export async function getPillarBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(pillars).where(eq(pillars.slug, slug)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getAllPillars() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(pillars);
+}
+
+export async function getArticleBySlug(slug: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(articles).where(eq(articles.slug, slug)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getArticlesByPillarId(pillarId: number, limit: number = 10) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(articles)
+    .where(eq(articles.pillarId, pillarId))
+    .orderBy(desc(articles.publishedAt))
+    .limit(limit);
+}
+
+export async function getFeaturedArticles(limit: number = 3) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(articles)
+    .where(eq(articles.isFeatured, 1))
+    .orderBy(desc(articles.publishedAt))
+    .limit(limit);
+}
+
+export async function getLatestArticles(limit: number = 10) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(articles)
+    .orderBy(desc(articles.publishedAt))
+    .limit(limit);
+}
+
+export async function subscribeNewsletter(email: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  try {
+    await db.insert(newsletterSubscriptions).values({ email });
+    return true;
+  } catch (error: any) {
+    if (error.code === "ER_DUP_ENTRY") {
+      // Email already exists, try to reactivate
+      await db.update(newsletterSubscriptions)
+        .set({ unsubscribedAt: null })
+        .where(eq(newsletterSubscriptions.email, email));
+      return true;
+    }
+    throw error;
+  }
+}
+
