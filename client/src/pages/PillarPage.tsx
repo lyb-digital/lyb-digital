@@ -8,18 +8,21 @@ import NewsletterForm from "@/components/NewsletterForm";
 import { formatDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const PILLAR_INFO: Record<string, { name: string; description: string }> = {
+const PILLAR_INFO: Record<string, { name: string; description: string; color: string }> = {
   mind: {
     name: "Mind",
-    description: "Explore topics related to mental health, productivity, and personal growth.",
+    description: "Mental wellness, mindfulness, productivity, and emotional intelligence. Unlock the power of your thoughts and build habits that stick.",
+    color: "from-blue-50 to-blue-100",
   },
   body: {
     name: "Body",
-    description: "Discover insights about physical health, fitness, and wellness.",
+    description: "Nutrition, fitness, sleep science, and preventative health. Discover practical strategies for physical well-being.",
+    color: "from-green-50 to-green-100",
   },
   soul: {
     name: "Soul",
-    description: "Connect with content about spirituality, purpose, and inner peace.",
+    description: "Purpose, meaning, relationships, and creativity. Explore what it means to live a life of significance.",
+    color: "from-orange-50 to-orange-100",
   },
 };
 
@@ -42,12 +45,12 @@ export default function PillarPage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-purple-50 to-pink-50 py-12 px-4">
+      <section className={`bg-gradient-to-r ${pillarData.color} py-12 md:py-16 px-4`}>
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-3">
             {pillarData.name}
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-foreground/80">
             {pillarData.description}
           </p>
         </div>
@@ -56,7 +59,10 @@ export default function PillarPage() {
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-12">
         {/* Articles List */}
         <section className="mb-16">
-          <h2 className="text-2xl font-bold text-foreground mb-8">Articles</h2>
+          <h2 className="font-serif text-3xl font-bold text-foreground mb-8">
+            Articles
+          </h2>
+          
           {isLoading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
@@ -67,7 +73,7 @@ export default function PillarPage() {
             <div className="space-y-6">
               {pillar.articles.map((article) => (
                 <Link key={article.id} href={`/article/${article.slug}`}>
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer border-border/50 hover:border-accent/30">
                     <CardHeader>
                       <div className="flex gap-6">
                         {article.featuredImageUrl && (
@@ -79,15 +85,15 @@ export default function PillarPage() {
                             />
                           </div>
                         )}
-                        <div className="flex-1">
-                          <CardTitle className="line-clamp-2 text-xl">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="line-clamp-2 font-serif text-xl text-foreground mb-2">
                             {article.title}
                           </CardTitle>
-                          <CardDescription className="mt-2">
+                          <CardDescription className="text-sm mb-2">
                             By {article.author} • {formatDate(article.publishedAt)}
                           </CardDescription>
                           {article.subtitle && (
-                            <p className="text-sm text-muted-foreground mt-3 line-clamp-2">
+                            <p className="text-sm text-muted-foreground line-clamp-2">
                               {article.subtitle}
                             </p>
                           )}
@@ -99,25 +105,34 @@ export default function PillarPage() {
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground text-center py-12">
-              No articles in this pillar yet.
-            </p>
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg mb-4">
+                No articles in this pillar yet.
+              </p>
+              <p className="text-foreground/70">
+                Check back soon for new insights on {pillarData.name.toLowerCase()}.
+              </p>
+            </div>
           )}
         </section>
 
         {/* Newsletter Section */}
-        <section className="bg-blue-50 rounded-lg p-8 mb-12">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Stay Updated</h2>
-          <p className="text-muted-foreground mb-6">
-            Subscribe to our newsletter for the latest articles and insights.
-          </p>
-          <NewsletterForm />
+        <section className="bg-gradient-to-r from-primary/5 via-accent/5 to-secondary/5 rounded-xl p-8 md:p-12 mb-12 border border-border/50">
+          <div className="max-w-2xl">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-2">
+              Stay Updated
+            </h2>
+            <p className="text-foreground/70 mb-6">
+              Get the latest {pillarData.name.toLowerCase()} insights delivered to your inbox. Evidence-based, actionable, and encouraging.
+            </p>
+            <NewsletterForm />
+          </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-8 px-4 mt-auto">
-        <div className="max-w-6xl mx-auto text-center">
+      <footer className="bg-foreground/5 border-t border-border/50 py-8 px-4 mt-auto">
+        <div className="max-w-6xl mx-auto text-center text-sm text-foreground/60">
           <p>&copy; 2024 Live Your Best Digital. All rights reserved.</p>
         </div>
       </footer>

@@ -16,23 +16,33 @@ export default function Home() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-50 to-indigo-50 py-16 px-4">
+      <section className="brand-gradient py-16 md:py-24 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Live Your Best Digital
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4">
+            Live Your Best Life
           </h1>
-          <p className="text-xl text-muted-foreground mb-8">
-            Unlock your full potential with evidence-based wisdom across Mind, Body, and Soul
+          <p className="text-lg md:text-xl text-foreground/80 mb-2">
+            Evidence for your mind. Action for your life.
+          </p>
+          <p className="text-base md:text-lg text-foreground/70 mb-8 max-w-2xl mx-auto">
+            We're your friendly, knowledgeable guide to mental wellness, physical health, and meaningful living. 
+            Explore evidence-based wisdom across Mind, Body, and Soul.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Link href="/mind">
-              <Button variant="default">Explore Mind</Button>
+              <Button className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-2 h-auto">
+                Explore Mind
+              </Button>
             </Link>
             <Link href="/body">
-              <Button variant="outline">Explore Body</Button>
+              <Button className="bg-secondary hover:bg-secondary/90 text-white font-semibold px-6 py-2 h-auto">
+                Explore Body
+              </Button>
             </Link>
             <Link href="/soul">
-              <Button variant="outline">Explore Soul</Button>
+              <Button className="bg-accent hover:bg-accent/90 text-white font-semibold px-6 py-2 h-auto">
+                Explore Soul
+              </Button>
             </Link>
           </div>
         </div>
@@ -41,7 +51,15 @@ export default function Home() {
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-12">
         {/* Featured Articles */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Featured</h2>
+          <div className="mb-8">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">
+              Featured Insights
+            </h2>
+            <p className="text-foreground/70">
+              Curated articles to help you unlock your potential
+            </p>
+          </div>
+          
           {featuredLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[1, 2, 3].map((i) => (
@@ -52,22 +70,26 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {featured.map((article) => (
                 <Link key={article.id} href={`/article/${article.slug}`}>
-                  <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
+                  <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer border-border/50 hover:border-accent/30">
                     {article.featuredImageUrl && (
                       <div className="h-48 overflow-hidden bg-muted">
                         <img
                           src={article.featuredImageUrl}
                           alt={article.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                     )}
                     <CardHeader>
-                      <CardTitle className="line-clamp-2">{article.title}</CardTitle>
-                      <CardDescription>{article.author}</CardDescription>
+                      <CardTitle className="line-clamp-2 font-serif text-lg text-foreground">
+                        {article.title}
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        {article.author}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {formatDate(article.publishedAt)}
                       </p>
                     </CardContent>
@@ -76,13 +98,23 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground">No featured articles yet.</p>
+            <p className="text-muted-foreground text-center py-8">
+              Featured articles coming soon.
+            </p>
           )}
         </section>
 
         {/* Latest Articles */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Latest</h2>
+          <div className="mb-8">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">
+              Latest Articles
+            </h2>
+            <p className="text-foreground/70">
+              Fresh perspectives on living your best life
+            </p>
+          </div>
+          
           {latestLoading ? (
             <div className="space-y-4">
               {[1, 2, 3].map((i) => (
@@ -93,7 +125,7 @@ export default function Home() {
             <div className="space-y-4">
               {latest.map((article) => (
                 <Link key={article.id} href={`/article/${article.slug}`}>
-                  <Card className="hover:shadow-md transition-shadow cursor-pointer">
+                  <Card className="hover:shadow-md transition-shadow cursor-pointer border-border/50 hover:border-accent/30">
                     <CardHeader>
                       <div className="flex gap-4">
                         {article.featuredImageUrl && (
@@ -105,9 +137,11 @@ export default function Home() {
                             />
                           </div>
                         )}
-                        <div className="flex-1">
-                          <CardTitle className="line-clamp-2">{article.title}</CardTitle>
-                          <CardDescription className="mt-2">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="line-clamp-2 font-serif text-base text-foreground">
+                            {article.title}
+                          </CardTitle>
+                          <CardDescription className="text-sm mt-1">
                             {article.author} • {formatDate(article.publishedAt)}
                           </CardDescription>
                           {article.subtitle && (
@@ -123,24 +157,54 @@ export default function Home() {
               ))}
             </div>
           ) : (
-            <p className="text-muted-foreground">No articles yet.</p>
+            <p className="text-muted-foreground text-center py-8">
+              Articles coming soon.
+            </p>
           )}
         </section>
 
         {/* Newsletter Section */}
-        <section className="bg-blue-50 rounded-lg p-8 mb-12">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Stay Updated</h2>
-          <p className="text-muted-foreground mb-6">
-            Subscribe to our newsletter for the latest articles and insights.
-          </p>
-          <NewsletterForm />
+        <section className="bg-gradient-to-r from-primary/5 via-accent/5 to-secondary/5 rounded-xl p-8 md:p-12 mb-12 border border-border/50">
+          <div className="max-w-2xl">
+            <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-2">
+              Stay Connected
+            </h2>
+            <p className="text-foreground/70 mb-6">
+              Get weekly insights delivered to your inbox. Evidence-based wisdom, actionable steps, and encouragement to help you live your best life.
+            </p>
+            <NewsletterForm />
+          </div>
         </section>
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-white py-8 px-4 mt-auto">
-        <div className="max-w-6xl mx-auto text-center">
-          <p>&copy; 2024 Live Your Best Digital. All rights reserved.</p>
+      <footer className="bg-foreground/5 border-t border-border/50 py-8 px-4 mt-auto">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div>
+              <h3 className="font-serif font-semibold text-foreground mb-3">Explore</h3>
+              <ul className="space-y-2 text-sm text-foreground/70">
+                <li><Link href="/mind"><span className="hover:text-accent transition-colors">Mind</span></Link></li>
+                <li><Link href="/body"><span className="hover:text-accent transition-colors">Body</span></Link></li>
+                <li><Link href="/soul"><span className="hover:text-accent transition-colors">Soul</span></Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-serif font-semibold text-foreground mb-3">About</h3>
+              <p className="text-sm text-foreground/70">
+                Live Your Best Digital is your guide to unlocking your full potential through evidence-based wisdom.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-serif font-semibold text-foreground mb-3">Our Promise</h3>
+              <p className="text-sm text-foreground/70">
+                Evidence for your mind. Action for your life.
+              </p>
+            </div>
+          </div>
+          <div className="border-t border-border/50 pt-6 text-center text-sm text-foreground/60">
+            <p>&copy; 2024 Live Your Best Digital. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
