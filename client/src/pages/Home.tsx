@@ -6,10 +6,11 @@ import NewsletterForm from "@/components/NewsletterForm";
 import Navigation from "@/components/Navigation";
 import { formatDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { urlFor } from "@/lib/sanity";
 
 export default function Home() {
   const { data: featured, isLoading: featuredLoading } = trpc.content.getFeaturedArticles.useQuery();
-  const { data: latest, isLoading: latestLoading } = trpc.content.getLatestArticles.useQuery();
+  const { data: latest, isLoading: latestLoading } = trpc.content.getLatestArticles.useQuery({});
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -69,12 +70,12 @@ export default function Home() {
           ) : featured && featured.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {featured.map((article) => (
-                <Link key={article.id} href={`/article/${article.slug}`}>
+                <Link key={article._id} href={`/article/${article.slug.current}`}>
                   <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer border-border/50 hover:border-accent/30">
-                    {article.featuredImageUrl && (
+                    {article.featuredImage && (
                       <div className="h-48 overflow-hidden bg-muted">
                         <img
-                          src={article.featuredImageUrl}
+                          src={urlFor(article.featuredImage)?.width(400).height(300).fit('crop').auto('format').url() || ''}
                           alt={article.title}
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                         />
@@ -85,12 +86,12 @@ export default function Home() {
                         {article.title}
                       </CardTitle>
                       <CardDescription className="text-sm">
-                        {article.author}
+                        {article.author?.name || 'Anonymous'}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="text-xs text-muted-foreground">
-                        {formatDate(article.publishedAt)}
+                        {formatDate(new Date(article.publishedAt))}
                       </p>
                     </CardContent>
                   </Card>
@@ -124,14 +125,14 @@ export default function Home() {
           ) : latest && latest.length > 0 ? (
             <div className="space-y-4">
               {latest.map((article) => (
-                <Link key={article.id} href={`/article/${article.slug}`}>
+                <Link key={article._id} href={`/article/${article.slug.current}`}>
                   <Card className="hover:shadow-md transition-shadow cursor-pointer border-border/50 hover:border-accent/30">
                     <CardHeader>
                       <div className="flex gap-4">
-                        {article.featuredImageUrl && (
+                        {article.featuredImage && (
                           <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded bg-muted">
                             <img
-                              src={article.featuredImageUrl}
+                              src={urlFor(article.featuredImage)?.width(200).height(200).fit('crop').auto('format').url() || ''}
                               alt={article.title}
                               className="w-full h-full object-cover"
                             />
@@ -142,7 +143,7 @@ export default function Home() {
                             {article.title}
                           </CardTitle>
                           <CardDescription className="text-sm mt-1">
-                            {article.author} • {formatDate(article.publishedAt)}
+                            {article.author?.name || 'Anonymous'} • {formatDate(new Date(article.publishedAt))}
                           </CardDescription>
                           {article.subtitle && (
                             <p className="text-sm text-muted-foreground mt-2 line-clamp-2">

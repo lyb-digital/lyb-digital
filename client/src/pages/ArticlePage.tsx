@@ -7,6 +7,8 @@ import NewsletterForm from "@/components/NewsletterForm";
 import { formatDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Share2, ArrowLeft } from "lucide-react";
+import { PortableText } from "@/components/PortableText";
+import { urlFor } from "@/lib/sanity";
 
 export default function ArticlePage() {
   const [match, params] = useRoute("/article/:slug");
@@ -51,10 +53,10 @@ export default function ArticlePage() {
         ) : article ? (
           <article>
             {/* Featured Image */}
-            {article.featuredImageUrl && (
+            {article.featuredImage && (
               <div className="mb-8 -mx-4 md:mx-0 md:rounded-lg overflow-hidden bg-muted">
                 <img
-                  src={article.featuredImageUrl}
+                  src={urlFor(article.featuredImage)?.width(800).height(400).fit('crop').auto('format').url() || ''}
                   alt={article.title}
                   className="w-full h-96 object-cover"
                 />
@@ -73,8 +75,8 @@ export default function ArticlePage() {
               )}
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div className="text-sm text-foreground/70">
-                  <p>By <span className="font-semibold text-foreground">{article.author}</span></p>
-                  <p>{formatDate(article.publishedAt)}</p>
+                  <p>By <span className="font-semibold text-foreground">{article.author?.name || 'Anonymous'}</span></p>
+                  <p>{formatDate(new Date(article.publishedAt))}</p>
                 </div>
                 <Button
                   variant="outline"
@@ -89,11 +91,12 @@ export default function ArticlePage() {
             </header>
 
             {/* Content */}
-            <div className="prose-brand mb-12">
-              <div
-                dangerouslySetInnerHTML={{ __html: article.richTextBody }}
-                className="text-foreground leading-relaxed space-y-4"
-              />
+            <div className="mb-12">
+              {article.body && article.body.length > 0 ? (
+                <PortableText value={article.body} />
+              ) : (
+                <p className="text-foreground/70">No content available.</p>
+              )}
             </div>
 
             {/* Newsletter Section */}

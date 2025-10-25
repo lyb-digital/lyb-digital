@@ -1,17 +1,20 @@
-import { COOKIE_NAME } from "@shared/const";
-import { getSessionCookieOptions } from "./_core/cookies";
-import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, router } from "./_core/trpc";
-import { z } from "zod";
+import {COOKIE_NAME} from "@shared/const";
+import {getSessionCookieOptions} from "./_core/cookies";
+import {systemRouter} from "./_core/systemRouter";
+import {publicProcedure, router} from "./_core/trpc";
+import {z} from "zod";
 import {
+  getPillars,
   getPillarBySlug,
-  getAllPillars,
-  getArticleBySlug,
-  getArticlesByPillarId,
+  getArticles,
   getFeaturedArticles,
   getLatestArticles,
-  subscribeNewsletter,
-} from "./db";
+  getArticleBySlug,
+  getArticlesByPillarSlug,
+  getAuthors,
+  getAuthorBySlug,
+} from "./sanity-queries";
+import {previewRouter} from "./preview-routes";
 
 export const appRouter = router({
   system: systemRouter,
@@ -27,61 +30,58 @@ export const appRouter = router({
     }),
   }),
 
-  // Content management routers
+  // Content management routers - powered by Sanity CMS
   content: router({
-    // Get all pillars
-    getPillars: publicProcedure.query(async () => {
-      return getAllPillars();
-    }),
+    getPillars: publicProcedure.query(() => getPillars()),
 
-    // Get pillar by slug with articles
     getPillarBySlug: publicProcedure
-      .input(z.object({ slug: z.string() }))
-      .query(async ({ input }) => {
-        const pillar = await getPillarBySlug(input.slug);
-        if (!pillar) return null;
-        const pillarArticles = await getArticlesByPillarId(pillar.id, 50);
-        return {
-          ...pillar,
-          articles: pillarArticles,
-        };
-      }),
+      .input(z.object({slug: z.string()}))
+      .query(({input}) => getPillarBySlug(input.slug)),
 
-    // Get article by slug
+    getArticles: publicProcedure.query(() => getArticles()),
+
+    getFeaturedArticles: publicProcedure.query(() => getFeaturedArticles()),
+
+    getLatestArticles: publicProcedure
+      .input(z.object({limit: z.number().optional()}))
+      .query(({input}) => getLatestArticles(input.limit)),
+
     getArticleBySlug: publicProcedure
-      .input(z.object({ slug: z.string() }))
-      .query(async ({ input }) => {
-        return getArticleBySlug(input.slug);
-      }),
+      .input(z.object({slug: z.string()}))
+      .query(({input}) => getArticleBySlug(input.slug)),
 
-    // Get featured articles for homepage
-    getFeaturedArticles: publicProcedure.query(async () => {
-      return getFeaturedArticles(3);
-    }),
-
-    // Get latest articles for homepage
-    getLatestArticles: publicProcedure.query(async () => {
-      return getLatestArticles(10);
-    }),
+    getArticlesByPillarSlug: publicProcedure
+      .input(z.object({pillarSlug: z.string()}))
+      .query(({input}) => getArticlesByPillarSlug(input.pillarSlug)),
   }),
 
-  // Newsletter router
+  authors: router({
+    getAuthors: publicProcedure.query(() => getAuthors()),
+
+    getAuthorBySlug: publicProcedure
+      .input(z.object({slug: z.string()}))
+      .query(({input}) => getAuthorBySlug(input.slug)),
+  }),
+
   newsletter: router({
     subscribe: publicProcedure
-      .input(z.object({ email: z.string().email() }))
-      .mutation(async ({ input }) => {
-        try {
-          await subscribeNewsletter(input.email);
-          return {
-            success: true,
-            message: "Successfully subscribed to the newsletter!",
-          };
-        } catch (error) {
-          console.error("Newsletter subscription error:", error);
-          throw new Error("Failed to subscribe. Please try again.");
-        }
+      .input(z.object({email: z.string().email()}))
+      .mutation(async ({input}) => {
+        // TODO: Implement newsletter subscription
+        // Options:
+        // 1. Store in database
+        // 2. Send to external service (Mailchimp, ConvertKit, etc.)
+        // 3. Trigger webhook to automation platform
+        
+        console.log(`Newsletter subscription: ${input.email}`);
+        return {
+          success: true,
+          message: "Thank you for subscribing!",
+        };
       }),
   }),
+
+  preview: previewRouter,
 });
 
 export type AppRouter = typeof appRouter;

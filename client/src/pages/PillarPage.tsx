@@ -7,6 +7,8 @@ import Navigation from "@/components/Navigation";
 import NewsletterForm from "@/components/NewsletterForm";
 import { formatDate } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { urlFor } from "@/lib/sanity";
+import type { SanityArticle } from "../../../server/sanity-queries";
 
 const PILLAR_INFO: Record<string, { name: string; description: string; color: string }> = {
   mind: {
@@ -71,15 +73,15 @@ export default function PillarPage() {
             </div>
           ) : pillar && pillar.articles && pillar.articles.length > 0 ? (
             <div className="space-y-6">
-              {pillar.articles.map((article) => (
-                <Link key={article.id} href={`/article/${article.slug}`}>
+              {pillar.articles.map((article: SanityArticle) => (
+                <Link key={article._id} href={`/article/${article.slug.current}`}>
                   <Card className="hover:shadow-md transition-shadow cursor-pointer border-border/50 hover:border-accent/30">
                     <CardHeader>
                       <div className="flex gap-6">
-                        {article.featuredImageUrl && (
+                        {article.featuredImage && (
                           <div className="w-32 h-32 flex-shrink-0 overflow-hidden rounded bg-muted">
                             <img
-                              src={article.featuredImageUrl}
+                              src={urlFor(article.featuredImage)?.width(300).height(300).fit('crop').auto('format').url() || ''}
                               alt={article.title}
                               className="w-full h-full object-cover"
                             />
@@ -90,7 +92,7 @@ export default function PillarPage() {
                             {article.title}
                           </CardTitle>
                           <CardDescription className="text-sm mb-2">
-                            By {article.author} • {formatDate(article.publishedAt)}
+                            By {article.author?.name || 'Anonymous'} • {formatDate(new Date(article.publishedAt))}
                           </CardDescription>
                           {article.subtitle && (
                             <p className="text-sm text-muted-foreground line-clamp-2">
