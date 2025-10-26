@@ -18,6 +18,17 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
 
   if (!isUnauthorized) return;
 
+  // Only redirect to login for protected operations, not for public content queries
+  // Public content queries should fail gracefully without redirecting
+  const currentPath = window.location.pathname;
+  const isPublicContentPage = ['/', '/mind', '/body', '/soul'].some(path => currentPath.startsWith(path));
+  
+  if (isPublicContentPage) {
+    // Don't redirect on public pages - let them handle errors gracefully
+    console.warn("[Auth] Query failed on public page, allowing graceful degradation");
+    return;
+  }
+
   window.location.href = getLoginUrl();
 };
 
@@ -59,3 +70,4 @@ createRoot(document.getElementById("root")!).render(
     </QueryClientProvider>
   </trpc.Provider>
 );
+
