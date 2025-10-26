@@ -2,7 +2,21 @@
   "buildCommand": "pnpm build",
   "devCommand": "pnpm dev",
   "installCommand": "pnpm install",
-  "outputDirectory": "dist",
+  "outputDirectory": "dist/public",
+  "rewrites": [
+    {
+      "source": "/api/trpc/:path*",
+      "destination": "/api/trpc.ts"
+    },
+    {
+      "source": "/api/oauth/:path*",
+      "destination": "/api/oauth.ts"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/api/trpc/:path*",
@@ -33,13 +47,6 @@
           "value": "strict-origin-when-cross-origin"
         }
       ]
-    }
-  ],
-  "redirects": [
-    {
-      "source": "/index.html",
-      "destination": "/",
-      "permanent": true
     }
   ]
 }
